@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using NekoFood.Models;
 using NLog.Web;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +9,7 @@ builder.Host.UseNLog();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<NekoFoodContext>(options => options.UseSqlServer("Name=ConnectionStrings:DefaultConnection"));
 
 var app = builder.Build();
 

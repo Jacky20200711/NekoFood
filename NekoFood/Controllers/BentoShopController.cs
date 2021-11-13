@@ -101,9 +101,12 @@ namespace NekoFood.Controllers
 
                 #endregion
 
-                // 更新DB
+                // 更新DB (連動刪除此店家的商品)
+                using var transaction = _context.Database.BeginTransaction();
+                _context.RemoveRange(_context.Bentos.Where(b => b.ShopGuid == data.ShopGuid));
                 _context.Remove(data);
                 await _context.SaveChangesAsync();
+                transaction.Commit();
 
                 return "刪除成功";
             }

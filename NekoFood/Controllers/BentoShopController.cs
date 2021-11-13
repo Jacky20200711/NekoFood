@@ -150,11 +150,11 @@ namespace NekoFood.Controllers
                     string.IsNullOrEmpty(address) ||
                     string.IsNullOrEmpty(phone))
                 {
-                    TempData["message"] = "新增失敗，店名、地址、電話不能為空";
+                    TempData["message"] = "修改失敗，店名、地址、電話不能為空";
                     return RedirectToAction("Edit", new { id });
                 }
 
-                // 取出目標案件
+                // 取出目標資料
                 var data = await _context.BentoShops.FindAsync(id);
                 if (data == null)
                 {
@@ -162,7 +162,7 @@ namespace NekoFood.Controllers
                     return RedirectToAction("Index");
                 }
 
-                // 修改案件 & 更新DB
+                // 修改目標資料 & 更新DB
                 data.Name = name;
                 data.Address = address;
                 data.Phone = phone;

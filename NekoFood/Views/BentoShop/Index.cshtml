@@ -75,6 +75,7 @@
                                                     <td style="white-space: nowrap;">@data.Phone</td>
                                                     <td style="white-space: nowrap;">@data.Address</td>
                                                     <td style="white-space: nowrap;">
+                                                        <a class="btn btn-warning" href='@Url.Action("Index", "Bento", new { shopName = data.Name, shopGuid = data.ShopGuid })' target="_blank">商品</a>
                                                         <button class="btn btn-success" onclick="location.href='@Url.Action("Edit", "BentoShop", new { id = data.Id })'">修改</button>
                                                         <button class="btn btn-danger" onclick="DeleteData(@data.Id)">刪除</button>
                                                     </td>

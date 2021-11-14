@@ -70,7 +70,7 @@
                                     </label>
                                 </div>
                                 <div style="width:84%; margin-left:24px; margin-top:20px;">
-                                    <button type="submit" class="btn btn-lg btn-success btn-block" onclick="SubmitForm()">登入</button>
+                                    <button id="submit" type="submit" class="btn btn-lg btn-success btn-block" onclick="SubmitForm()">登入</button>
                                 </div>
                             </fieldset>
                         </form>
@@ -84,18 +84,6 @@
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script>
-    // 若用戶提交的時候有設置自動登入，則修改localStorage
-    //function CheckRemember(){
-    //    if(document.getElementById('remember').checked){
-    //        localStorage.setItem('autoLoginCreateTime', Date.now());
-    //        localStorage.setItem('username', document.getElementById('username').value);
-    //        localStorage.setItem('password', document.getElementById('password').value);
-    //    }
-    //    else{
-    //        localStorage.removeItem('autoLoginCreateTime');
-    //    }
-    //}
-
     function SubmitForm(){
         // 檢查登入是否成功
         var username = document.getElementById('username').value;
@@ -106,6 +94,13 @@
             data: { username: username, password: password }
         }).done(function (message) {
             if (message == "登入成功") {
+                // 登入成功後，再判斷是否要設置自動登入
+                if(document.getElementById('remember').checked){
+                    localStorage.setItem('autoLoginCreateTime', Date.now());
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('password', password);
+                }
+                // 最後再跳轉到首頁
                 self.location.href = '@Url.Action("Index", "Home")';
             }
             else{
@@ -114,23 +109,34 @@
         });
     }
 
-    // 檢查是否設置自動登入
-    //var autoLoginCreateTime = localStorage.getItem('autoLoginCreateTime');
-    //if (autoLoginCreateTime != null) {
-    //    // 檢查期限是否超過24小時，若超過則清除
-    //    var currentTime = Date.now();
-    //    if(parseInt(currentTime - autoLoginCreateTime) / 3600000 > 24){
-    //        localStorage.removeItem('autoLoginCreateTime');
-    //    }
-    //    else{
-    //        // 取出用戶資訊
-    //        var username = localStorage.getItem('username');
-    //        var password = localStorage.getItem('password');
-    //        if (username != null && password != null) {
-    //            document.getElementById("username").value = username;
-    //            document.getElementById("password").value = password;
-    //            document.forms[0].submit();
-    //        }
-    //    }
-    //}
+    // 若用戶點選登出，則清除自動登入的相關資訊
+    if('@TempData["isUserLogout"]' != ''){
+        localStorage.removeItem('autoLoginCreateTime');
+        localStorage.removeItem('username');
+        localStorage.removeItem('password');
+    }
+    else{
+        // 判斷是否進行自動登入
+        var autoLoginCreateTime = localStorage.getItem('autoLoginCreateTime');
+        if (autoLoginCreateTime != null) {
+            // 檢查期限是否超過24小時，若超過則清除登入資訊
+            var currentTime = Date.now();
+            if(parseInt(currentTime - autoLoginCreateTime) / 3600000 > 24){
+                localStorage.removeItem('autoLoginCreateTime');
+                localStorage.removeItem('username');
+                localStorage.removeItem('password');
+            }
+            else{
+                // 取出 localStorage 儲存的帳密並自動登入
+                var username = localStorage.getItem('username');
+                var password = localStorage.getItem('password');
+                if (username != null && password != null) {
+                    document.getElementById("submit").disabled = true; // 防止手動點選提交
+                    document.getElementById("username").value = username;
+                    document.getElementById("password").value = password;
+                    SubmitForm();
+                }
+            }
+        }
+    }
 </script>

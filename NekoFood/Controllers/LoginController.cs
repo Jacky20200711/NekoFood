@@ -61,6 +61,7 @@ namespace NekoFood.Controllers
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
+            TempData["isUserLogout"] = "Y";
             return RedirectToAction("Index");
         }
     }

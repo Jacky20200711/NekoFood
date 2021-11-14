@@ -22,8 +22,7 @@ namespace NekoFood.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult LoginCheck(string username, string password)
+        public string LoginCheck(string username, string password)
         {
             try
             {
@@ -32,8 +31,7 @@ namespace NekoFood.Controllers
                 password = password.Trim();
                 if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 {
-                    TempData["message"] = "AD帳號或密碼不能為空";
-                    return RedirectToAction("Index");
+                    return "AD帳號或密碼不能為空";
                 }
 
                 // 轉換密碼
@@ -45,19 +43,18 @@ namespace NekoFood.Controllers
                 var userAccount = _context.UserAccounts.FirstOrDefault(u => u.Name == username && u.PasswordHash == passwordHash);
                 if(userAccount == null)
                 {
-                    TempData["message"] = "帳密錯誤";
-                    return RedirectToAction("Index");
+                    return "帳密錯誤";
                 }
 
                 // 設置登入後的狀態
                 HttpContext.Session.SetString("loginName", username);
 
-                return RedirectToRoute(new { controller = "Home", action = "Index" });
+                return "登入成功";
             }
             catch (Exception)
             {
                 _logger.LogError("登入失敗");
-                return View("~/Views/Shared/ErrorPage.cshtml");
+                return "登入失敗";
             }
         }
 

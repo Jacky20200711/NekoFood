@@ -1,0 +1,83 @@
+﻿﻿@{
+    Layout = null;
+}
+
+<script>
+    // 這個函數用來將 Entity Code 轉回中文
+    function decodeEntities(encodedString) {
+        var textArea = document.createElement('textarea');
+        textArea.innerHTML = encodedString;
+        return textArea.value;
+    }
+    var serverMessage = decodeEntities('@TempData["message"]');
+    if (serverMessage.length > 0) {
+        alert(serverMessage);
+    }
+</script>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>簡易訂餐系統</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="~/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="~/css/startmin.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="~/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <!-- 填滿整個頁面的背景圖 -->
+    <img src="~/image/LoginBackground.jpg" style="height:100%;width:100%; position:absolute; left:0px; top:0px;" />
+    <!-------------------------->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <div class="login-panel panel panel-default">
+                    <br>
+                    <div>
+                        <h3 class="panel-title" style="text-align:center; font-size: 26px; letter-spacing: 1px; font-weight:600; color:green; margin-top:10px;">簡易訂餐系統-會員登入</h3>
+                    </div>
+                    <div class="panel-body" style="margin-top: 10px;">
+                        <form role="form" asp-controller="Login" asp-action="LoginCheck">
+                            <fieldset>
+                                <div class="form-group" style="width:84%; margin-left:24px;">
+                                    <input class="form-control"  placeholder="AD帳號" name="username" maxlength="30" required autofocus>
+                                </div>
+                                <div class="form-group" style="width:84%; margin-left:24px;">
+                                    <input class="form-control" placeholder="密碼" name="password" type="password" maxlength="50" required>
+                                </div>
+                                <div class="checkbox" style="margin-left:26px;">
+                                    <label>
+                                        <input name="remember" type="checkbox" value="Remember Me">保持登入(有效期限為1天)
+                                    </label>
+                                </div>
+                                <div style="width:84%; margin-left:24px; margin-top:20px;">
+                                    <button type="submit" class="btn btn-lg btn-success btn-block">登入</button>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

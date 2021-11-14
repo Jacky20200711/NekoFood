@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NekoFood.Models;
+using NekoFood.Services;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -26,6 +27,12 @@ namespace NekoFood.Controllers
         {
             try
             {
+                // 避免重複登入
+                if(Utility.GetLoginName(HttpContext) != null)
+                {
+                    return "請勿重複登入";
+                }
+
                 // 檢查參數
                 username = username.Trim();
                 password = password.Trim();
@@ -47,8 +54,10 @@ namespace NekoFood.Controllers
                 }
 
                 // 設置登入後的狀態
+                string userGuid = Guid.NewGuid().ToString();
                 HttpContext.Session.SetString("loginName", username);
-
+                HttpContext.Session.SetString("loginGuid", userGuid);
+                AppCache.Set(username, userGuid);
                 return "登入成功";
             }
             catch (Exception)
@@ -58,8 +67,13 @@ namespace NekoFood.Controllers
             }
         }
 
-        public IActionResult Logout()
+        public IActionResult Logout(bool isClearCache = true)
         {
+            if (isClearCache)
+            {
+                AppCache.Remove(Utility.GetLoginName(HttpContext));
+            }
+
             HttpContext.Session.Clear();
             TempData["isUserLogout"] = "Y";
             return RedirectToAction("Index");

@@ -5,6 +5,7 @@ using NekoFood.Services;
 
 namespace NekoFood.Controllers
 {
+    [AuthorizeManager]
     public class UserAccountController : Controller
     {
         private readonly ILogger<UserAccountController> _logger;

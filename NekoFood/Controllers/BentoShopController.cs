@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace NekoFood.Controllers
 {
+    [AuthorizeManager]
     public class BentoShopController : Controller
     {
         private readonly ILogger<BentoShopController> _logger;

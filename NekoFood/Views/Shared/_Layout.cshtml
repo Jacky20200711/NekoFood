@@ -2,12 +2,12 @@
 @using NekoFood.Services
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
-    bool isSuperAdmin = false;
+    bool isAdmin = false;
     string? loginName = null;
     if(HttpContextAccessor.HttpContext != null)
     {
         loginName = Utility.GetLoginName(HttpContextAccessor.HttpContext) ?? "unknown";
-        isSuperAdmin = HttpContextAccessor.HttpContext.Session.GetString("isSuperAdmin") != null;
+        isAdmin = HttpContextAccessor.HttpContext.Session.GetString("admin") != null;
     }
 }﻿
 
@@ -87,8 +87,10 @@
                         <li>
                             <a href="@Url.Action("Index", "Home")"><i class="fa fa-edit fa-fw"></i> 我的訂單</a>
                             <a href="@Url.Action("Index", "Home")"><i class="fa fa-edit fa-fw"></i> 我的群組</a>
-                            <a href="@Url.Action("Index", "BentoShop")"><i class="fa fa-edit fa-fw"></i> 店家列表</a>
-                            <a href="@Url.Action("Index", "UserAccount")"><i class="fa fa-edit fa-fw"></i> 用戶列表</a>
+                            @if(@isAdmin){
+                                <a href="@Url.Action("Index", "BentoShop")"><i class="fa fa-edit fa-fw"></i> 店家列表</a>
+                                <a href="@Url.Action("Index", "UserAccount")"><i class="fa fa-edit fa-fw"></i> 用戶列表</a>
+                            }
                         </li>
                     </ul>
                 </div>

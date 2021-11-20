@@ -51,6 +51,13 @@ namespace NekoFood.Controllers
                 HttpContext.Session.SetString("loginName", username);
                 HttpContext.Session.SetString("loginGuid", userGuid);
                 AppCache.Set(username, userGuid);
+
+                // 若登入者為管理員，則設置特有的屬性
+                if(userAccount.UserGroup == "admin")
+                {
+                    HttpContext.Session.SetString("admin", "Y");
+                }
+
                 return "登入成功";
             }
             catch (Exception)

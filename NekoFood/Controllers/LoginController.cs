@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NekoFood.Models;
 using NekoFood.Services;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace NekoFood.Controllers
 {
@@ -41,13 +39,8 @@ namespace NekoFood.Controllers
                     return "AD帳號或密碼不能為空";
                 }
 
-                // 轉換密碼
-                using var md5 = MD5.Create();
-                var hashResult = md5.ComputeHash(Encoding.ASCII.GetBytes(password));
-                string passwordHash = BitConverter.ToString(hashResult).Replace("-", "");
-
                 // 檢查帳密
-                var userAccount = _context.UserAccounts.FirstOrDefault(u => u.Name == username && u.PasswordHash == passwordHash);
+                var userAccount = _context.UserAccounts.FirstOrDefault(u => u.Name == username && u.PasswordHash == Utility.GetEncryptPassword(password));
                 if(userAccount == null)
                 {
                     return "帳密錯誤";

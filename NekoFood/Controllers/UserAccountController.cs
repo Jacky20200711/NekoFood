@@ -50,7 +50,15 @@ namespace NekoFood.Controllers
                 string password = PostData["password"].ToString().Trim();
                 if(string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 {
-                    TempData["message"] = "新增失敗，名稱或密碼不能為空";
+                    TempData["message"] = "新增失敗，帳號或密碼不能為空";
+                    return RedirectToAction("Create");
+                }
+
+                // 禁止帳號重複
+                var data = _context.UserAccounts.FirstOrDefault(p => p.Name == username);
+                if(data != null)
+                {
+                    TempData["message"] = "新增失敗，帳號不能重複";
                     return RedirectToAction("Create");
                 }
 
@@ -144,9 +152,13 @@ namespace NekoFood.Controllers
             try
             {
                 // 取出參數內容
-                string username = PostData["username"].ToString().Trim();
                 string password = PostData["password"].ToString().Trim();
                 int id = Convert.ToInt32(PostData["id"].ToString());
+                if (string.IsNullOrEmpty(password))
+                {
+                    TempData["message"] = "修改失敗，帳號或密碼不能為空";
+                    return RedirectToAction("Edit", new { id });
+                }
 
                 // 取出目標資料
                 var data = await _context.UserAccounts.FindAsync(id);
@@ -157,7 +169,6 @@ namespace NekoFood.Controllers
                 }
 
                 // 修改目標資料 & 更新DB
-                data.Name = username;
                 data.PasswordHash = Utility.GetEncryptPassword(password);
                 await _context.SaveChangesAsync();
 

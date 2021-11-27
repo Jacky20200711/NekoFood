@@ -9,6 +9,11 @@ namespace NekoFood.Models
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
+            #region 開發階段可以取消這一段的註解以方便測試
+            context.HttpContext.Session.SetString("loginName", "Jacky");
+            context.HttpContext.Session.SetString("admin", "Y");
+            #endregion
+
             // 若用戶尚未登入，則跳轉到登入頁面
             string? loginName = Utility.GetLoginName(context.HttpContext);
             if (loginName == null)
@@ -16,10 +21,10 @@ namespace NekoFood.Models
                 context.Result = new RedirectToRouteResult(new { controller = "Login", action = "Index" });
             }
 
-            // 若有人打算存取用戶管理，則檢查是否為管理員
+            // 控制只有管理員才能存取的 Controller 權限
             if (context.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor)
             {
-                // 取得請求的 controller 和 action 名稱
+                // 取得 request的 controller 名稱
                 string controllerName = controllerActionDescriptor.ControllerName;
                 bool isAdmin = context.HttpContext.Session.GetString("admin") != null;
                 if (!isAdmin && (controllerName == "UserAccount" || controllerName == "BentoShop"))

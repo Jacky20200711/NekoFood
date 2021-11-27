@@ -60,9 +60,9 @@ namespace NekoFood.Controllers
 
                 return "登入成功";
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                _logger.LogError("登入失敗");
+                _logger.LogError($"登入失敗 -> {ex}");
                 return "登入失敗";
             }
         }

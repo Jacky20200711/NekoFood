@@ -28,9 +28,9 @@ namespace NekoFood.Controllers
                 var data = await _context.UserAccounts.ToListAsync();
                 return View(data);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                _logger.LogError($"取得 UserAccount 失敗");
+                _logger.LogError($"取得 UserAccount 失敗 -> {ex}");
                 return View("~/Views/Shared/ErrorPage.cshtml");
             }
         }
@@ -77,9 +77,9 @@ namespace NekoFood.Controllers
                 TempData["message"] = "新增成功";
                 return RedirectToAction("Index");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                _logger.LogError($"新增 UserAccount 失敗");
+                _logger.LogError($"新增 UserAccount 失敗 -> {ex}");
                 return View("~/Views/Shared/ErrorPage.cshtml");
             }
         }
@@ -118,9 +118,9 @@ namespace NekoFood.Controllers
 
                 return "刪除成功";
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                _logger.LogError($"刪除 UserAccount 失敗");
+                _logger.LogError($"刪除 UserAccount 失敗 -> {ex}");
                 return "刪除失敗，系統忙碌中";
             }
         }
@@ -176,9 +176,9 @@ namespace NekoFood.Controllers
                 TempData["message"] = "修改成功";
                 return RedirectToAction("Index");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                _logger.LogError($"修改 UserAccount 失敗");
+                _logger.LogError($"修改 UserAccount 失敗 -> {ex}");
                 return View("~/Views/Shared/ErrorPage.cshtml");
             }
         }

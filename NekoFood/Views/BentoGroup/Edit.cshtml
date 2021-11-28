@@ -39,6 +39,30 @@
                                             <input class="form-control" name="name" maxlength="30" value="@Model.Name" required>
                                         </div>
                                         <div class="form-group">
+                                            <label>選擇店家</label>
+                                            <select class="form-control" name="shopGuid" required>
+                                                @{
+                                                    List<string> names = ViewBag.names;
+                                                    List<string> guids = ViewBag.guids;
+                                                    if (names != null && guids != null)
+                                                    {
+                                                        // 優先顯示之前選擇的店家
+                                                        int index = guids.IndexOf(Model.ShopGuid);
+                                                        <option value="@guids[index]">@names[index]</option>
+
+                                                        // 之後再顯示其他店家
+                                                        for(int i = 0; i < names.Count; i++)
+                                                        {
+                                                            if(i != index)
+                                                            {
+                                                                <option value="@guids[i]">@names[i]</option>
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
                                             <label>收單時間</label>
                                             @{
                                                 string expireTime = Convert.ToDateTime(Model.ExpireTime).ToString("yyyy-MM-ddTHH:mm");

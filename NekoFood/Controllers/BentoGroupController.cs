@@ -33,8 +33,29 @@ namespace NekoFood.Controllers
             }
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult>  Create()
         {
+            #region 撈取各商家的名稱+地址+Guid
+
+            var shops = await _context.BentoShops.Select(x => new
+            {
+                x.Name,
+                x.ShopGuid,
+                x.Address
+            }).ToListAsync();
+
+            List<string> names = new();
+            List<string> guids = new();
+
+            foreach (var shop in shops)
+            {
+                names.Add($"{shop.Name} 地址: {shop.Address}");
+                guids.Add(shop.ShopGuid);
+            }
+
+            #endregion
+            ViewBag.names = names;
+            ViewBag.guids = guids;
             return View();
         }
 
@@ -135,7 +156,27 @@ namespace NekoFood.Controllers
             }
 
             #endregion
+            #region 撈取各商家的名稱+地址+Guid
 
+            var shops = await _context.BentoShops.Select(x => new
+            {
+                x.Name,
+                x.ShopGuid,
+                x.Address
+            }).ToListAsync();
+
+            List<string> names = new();
+            List<string> guids = new();
+
+            foreach (var shop in shops)
+            {
+                names.Add($"{shop.Name} 地址: {shop.Address}");
+                guids.Add(shop.ShopGuid);
+            }
+
+            #endregion
+            ViewBag.names = names;
+            ViewBag.guids = guids;
             return View(data);
         }
 
@@ -174,10 +215,10 @@ namespace NekoFood.Controllers
                 if(data.ShopGuid != shopGuid)
                 {
                     data.GroupGuid = Guid.NewGuid().ToString("N");
+                    data.ShopGuid = shopGuid;
                 }
 
                 // 修改目標資料並更新DB
-                data.ShopGuid = shopGuid;
                 data.Name = name;
                 data.ExpireTime = expireTime;
                 await _context.SaveChangesAsync();

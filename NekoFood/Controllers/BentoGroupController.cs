@@ -20,12 +20,23 @@ namespace NekoFood.Controllers
             _httpContext = httpContextAccessor.HttpContext;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(bool isGetAll = true)
         {
             try
             {
-                var data = await _context.BentoGroups.ToListAsync();
-                return View(data);
+                if (isGetAll)
+                {
+                    var data = await _context.BentoGroups.ToListAsync();
+                    return View(data);
+                }
+                else
+                {
+                    var data = await _context.BentoGroups
+                    .Where(d => d.Creator == Utility.GetLoginName(HttpContext))
+                    .ToListAsync();
+
+                    return View(data);
+                }
             }
             catch (Exception ex)
             {

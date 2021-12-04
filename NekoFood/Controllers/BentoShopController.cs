@@ -75,7 +75,7 @@ namespace NekoFood.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("新增 BentoShop 失敗 -> {ex}");
+                _logger.LogError($"新增 BentoShop 失敗 -> {ex}");
                 return View("~/Views/Shared/ErrorPage.cshtml");
             }
         }

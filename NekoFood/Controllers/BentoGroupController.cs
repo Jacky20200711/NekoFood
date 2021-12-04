@@ -1,6 +1,7 @@
 using NekoFood.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NekoFood.Services;
 
 namespace NekoFood.Controllers
 {
@@ -84,6 +85,7 @@ namespace NekoFood.Controllers
                 // 創建一筆資料
                 BentoGroup newData = new()
                 {
+                    Creator = Utility.GetLoginName(HttpContext),
                     GroupGuid = Guid.NewGuid().ToString("N"),
                     ShopGuid = shopGuid,
                     Name = name,

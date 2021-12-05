@@ -27,14 +27,19 @@ namespace NekoFood.Controllers
             {
                 if (isGetAll)
                 {
-                    var data = await _context.BentoGroups.ToListAsync();
+                    // 取出尚未達到收單時間的群組
+                    var data = await _context.BentoGroups
+                        .Where(d => DateTime.Compare(DateTime.Now, d.ExpireTime) < 0)
+                        .ToListAsync();
+
                     return View(data);
                 }
                 else
                 {
+                    // 取出登入用戶所建立，且尚未達到收單時間的群組
                     var data = await _context.BentoGroups
-                    .Where(d => d.Creator == Utility.GetLoginName(HttpContext))
-                    .ToListAsync();
+                        .Where(d => d.Creator == Utility.GetLoginName(HttpContext) && DateTime.Compare(DateTime.Now, d.ExpireTime) < 0)
+                        .ToListAsync();
 
                     return View(data);
                 }

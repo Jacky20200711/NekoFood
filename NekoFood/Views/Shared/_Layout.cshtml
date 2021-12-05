@@ -6,7 +6,7 @@
     string? loginName = null;
     if(HttpContextAccessor.HttpContext != null)
     {
-        loginName = Utility.GetLoginName(HttpContextAccessor.HttpContext) ?? "unknown";
+        loginName = Utility.GetLoginName(HttpContextAccessor.HttpContext);
         isAdmin = HttpContextAccessor.HttpContext.Session.GetString("admin") != null;
     }
 }﻿

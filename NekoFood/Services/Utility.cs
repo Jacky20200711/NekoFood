@@ -7,7 +7,7 @@ namespace NekoFood.Services
     {
         public static string GetLoginName(HttpContext httpContext)
         {
-            return httpContext.Session.GetString("loginName") ?? "unknown";
+            return httpContext.Session.GetString("loginName") ?? "";
         }
 
         public static string GetEncryptPassword(string password)

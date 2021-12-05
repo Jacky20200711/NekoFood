@@ -15,8 +15,8 @@ namespace NekoFood.Models
             #endregion
 
             // 若用戶尚未登入，則跳轉到登入頁面
-            string? loginName = Utility.GetLoginName(context.HttpContext);
-            if (loginName == null)
+            string loginName = Utility.GetLoginName(context.HttpContext);
+            if (string.IsNullOrEmpty(loginName))
             {
                 context.Result = new RedirectToRouteResult(new { controller = "Login", action = "Index" });
             }

@@ -26,7 +26,7 @@ namespace NekoFood.Controllers
             try
             {
                 // 避免重複登入
-                if(Utility.GetLoginName(HttpContext) != null)
+                if(!string.IsNullOrEmpty(Utility.GetLoginName(HttpContext)))
                 {
                     return "請勿重複登入";
                 }

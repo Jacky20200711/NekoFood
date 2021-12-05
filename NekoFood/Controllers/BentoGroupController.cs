@@ -5,6 +5,7 @@ using NekoFood.Services;
 
 namespace NekoFood.Controllers
 {
+    [AuthorizeManager]
     public class BentoGroupController : Controller
     {
         private readonly ILogger<BentoGroupController> _logger;
@@ -20,7 +21,7 @@ namespace NekoFood.Controllers
             _httpContext = httpContextAccessor.HttpContext;
         }
 
-        public async Task<IActionResult> Index(bool isGetAll = true)
+        public async Task<IActionResult> Index(bool isGetAll = false)
         {
             try
             {
@@ -139,6 +140,12 @@ namespace NekoFood.Controllers
 
                 #endregion
 
+                // 檢查是否擁有異動權限
+                if (!PermissionService.HasPermissionToModifyBentoGroup(HttpContext, data.Creator))
+                {
+                    return "刪除失敗，權限不足";
+                }
+
                 // 更新DB
                 _context.Remove(data);
                 await _context.SaveChangesAsync();
@@ -224,8 +231,15 @@ namespace NekoFood.Controllers
                     return RedirectToAction("Index");
                 }
 
+                // 檢查是否擁有異動權限
+                if (!PermissionService.HasPermissionToModifyBentoGroup(HttpContext, data.Creator))
+                {
+                    TempData["message"] = "修改失敗，權限不足";
+                    return RedirectToAction("Index");
+                }
+
                 // 若對應的店家被修改，則更新群組的Guid(令舊訂單不要再對應到這個群組)
-                if(data.ShopGuid != shopGuid)
+                if (data.ShopGuid != shopGuid)
                 {
                     data.GroupGuid = Guid.NewGuid().ToString("N");
                     data.ShopGuid = shopGuid;

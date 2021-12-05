@@ -10,8 +10,8 @@ namespace NekoFood.Models
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             #region 開發階段可以取消這一段的註解以方便測試
-            context.HttpContext.Session.SetString("loginName", "Jacky");
-            context.HttpContext.Session.SetString("admin", "Y");
+            //context.HttpContext.Session.SetString("loginName", "Jacky");
+            //context.HttpContext.Session.SetString("admin", "Y");
             #endregion
 
             // 若用戶尚未登入，則跳轉到登入頁面

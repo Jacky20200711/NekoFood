@@ -3,7 +3,7 @@
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
     bool isAdmin = false;
-    string? loginName = null;
+    string loginName = "";
     if(HttpContextAccessor.HttpContext != null)
     {
         loginName = Utility.GetLoginName(HttpContextAccessor.HttpContext);

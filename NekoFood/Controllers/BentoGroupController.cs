@@ -25,6 +25,7 @@ namespace NekoFood.Controllers
         {
             try
             {
+                ViewBag.PageTitle = isGetAll ? "群組列表" : "我的群組";
                 if (isGetAll)
                 {
                     // 取出尚未達到收單時間的群組

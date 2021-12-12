@@ -72,8 +72,6 @@ namespace NekoFood.Models
 
                 entity.Property(e => e.CreateTime).HasColumnType("datetime");
 
-                entity.Property(e => e.ExpireTime).HasColumnType("datetime");
-
                 entity.Property(e => e.GroupGuid)
                     .HasMaxLength(32)
                     .IsUnicode(false);

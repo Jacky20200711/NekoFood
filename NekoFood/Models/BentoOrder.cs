@@ -14,7 +14,6 @@ namespace NekoFood.Models
         public int TotalCost { get; set; }
         public int IsChecked { get; set; }
         public DateTime CreateTime { get; set; }
-        public DateTime ExpireTime { get; set; }
         public string? Remark { get; set; }
     }
 }

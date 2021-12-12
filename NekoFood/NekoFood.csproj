@@ -17,6 +17,9 @@
     <None Include="Views\BentoGroup\Create.cshtml" />
     <None Include="Views\BentoGroup\Edit.cshtml" />
     <None Include="Views\BentoGroup\Index.cshtml" />
+    <None Include="Views\BentoOrder\Create.cshtml" />
+    <None Include="Views\BentoOrder\Edit.cshtml" />
+    <None Include="Views\BentoOrder\Index.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

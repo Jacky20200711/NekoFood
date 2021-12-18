@@ -16,7 +16,8 @@ namespace NekoFood.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            bool isGetAll = true;
+            return RedirectToRoute(new { controller = "BentoGroup", action = "Index", isGetAll });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

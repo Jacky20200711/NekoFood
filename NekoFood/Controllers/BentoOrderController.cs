@@ -40,8 +40,10 @@ namespace NekoFood.Controllers
             }
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create(string shopGuid)
         {
+            // 取出該訂單所對應的店家商品
+            ViewBag.bentos = await _context.Bentos.Where(d => d.ShopGuid == shopGuid).ToListAsync();
             return View();
         }
 
@@ -54,10 +56,19 @@ namespace NekoFood.Controllers
                 // 提取前端傳來的參數
                 string groupGuid = PostData["groupGuid"].ToString().Trim();
                 string shopGuid = PostData["shopGuid"].ToString().Trim();
-                string bentoName = PostData["bentoName"].ToString().Trim();
                 int number =  Utility.ConvertStrToInt(PostData["number"].ToString());
-                int price = Utility.ConvertStrToInt(PostData["price"].ToString());
                 string remark = PostData["remark"].ToString().Trim();
+
+                // 解析便當資訊(包含名稱與價格，兩者以逗號隔開)
+                string[] bentoData = PostData["bentoName"].ToString().Trim().Split(',');
+                if(bentoData.Length != 2)
+                {
+                    TempData["message"] = "訂餐失敗，無法解析餐點名稱與價格";
+                    return RedirectToAction("Index");
+                }
+
+                string bentoName = bentoData[0];
+                int price = Utility.ConvertStrToInt(bentoData[1]);
 
                 // 創建一筆資料
                 BentoOrder newData = new()
@@ -77,7 +88,7 @@ namespace NekoFood.Controllers
                 _context.Add(newData);
                 await _context.SaveChangesAsync();
                 
-                TempData["message"] = "新增成功";
+                TempData["message"] = "訂餐成功";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)

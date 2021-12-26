@@ -203,7 +203,7 @@ namespace NekoFood.Controllers
                     return RedirectToAction("Index");
                 }
 
-                // 修改目標資料並更新DB(只允許修改便當名稱與數量)
+                // 修改目標資料並更新DB(只允許修改便當名稱、數量、備註)
                 data.BentoName = bentoName;
                 data.Number = number;
                 data.TotalCost = number * price;

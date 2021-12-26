@@ -33,29 +33,67 @@
                             <div class="col-lg-6">
                                 @if(Model != null)
                                 {
+                                    List<Bento> bentos = new List<Bento>();
+                                    int indexOfSelectedBento = -1;
+                                    int priceOfSelectedBento = 0;
+
+                                    // 搜尋之前選擇的餐點，其所在的索引
+                                    if(ViewBag.bentos != null)
+                                    {
+                                        bentos = (List<Bento>)ViewBag.bentos;
+                                        for(int i = 0; i < bentos.Count; i++)
+                                        {
+                                            if(Model.BentoName == bentos[i].Name)
+                                            {
+                                                indexOfSelectedBento = i;
+                                                priceOfSelectedBento = bentos[i].Price;
+                                                break;
+                                            }                
+                                        }
+                                    }
+
                                     <form role="form" asp-controller="BentoOrder" asp-action="Edit">
                                         <div class="form-group">
-                                        <label>選擇餐點</label>
-                                        <select class="form-control" name="bentoName">
-                                            <option value="A">A</option>
-                                            <option value="B">B</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>選擇數量</label>
-                                        <select class="form-control" name="number">
-                                            @{
-                                                for(int i = 1; i <= 10; i++)
+                                            <label>選擇餐點</label>
+                                            <select class="form-control" name="bentoName">
+                                                @if(indexOfSelectedBento != -1)
                                                 {
-                                                    <option value="@i">@i</option>
+                                                    // 顯示之前選擇的餐點，與對應的價格
+                                                    <option value="@bentos[indexOfSelectedBento].Name,@bentos[indexOfSelectedBento].Price">@bentos[indexOfSelectedBento].Name,@(bentos[indexOfSelectedBento].Price)元</option>
+
+                                                    // 顯示其餘的餐點與對應的價格
+                                                    for(int i = 0; i < bentos.Count; i++)
+                                                    {
+                                                        if(i != indexOfSelectedBento)
+                                                        {
+                                                            <option value="@bentos[i].Name,@(bentos[i].Price)">@bentos[i].Name,@(bentos[i].Price)元</option>
+                                                        }
+                                                    }
                                                 }
-                                            }
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>備註</label>
-                                        <input class="form-control" name="remark" value="@Model.Remark" maxlength="30">
-                                    </div>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>選擇數量</label>
+                                            <select class="form-control" name="number">
+                                                @{
+                                                    // 顯示之前選擇的數量
+                                                    <option value="@Model.Number">@Model.Number</option>
+
+                                                    // 列出其餘可以選擇的數量
+                                                    for(int i = 1; i <= 10; i++)
+                                                    {
+                                                        if(i != Model.Number)
+                                                        {
+                                                            <option value="@i">@i</option>
+                                                        }
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>備註</label>
+                                            <input class="form-control" name="remark" maxlength="30" value="@Model.Remark">
+                                        </div>
                                         <input type="hidden" name="id" value=@Model.Id />
                                         <button type="submit" class="btn btn-primary">送出</button>
                                         <button type="reset" class="btn btn-success">重設</button>

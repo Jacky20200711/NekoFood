@@ -40,10 +40,15 @@ namespace NekoFood.Controllers
             }
         }
 
-        public async Task<IActionResult> Create(string shopGuid)
+        public async Task<IActionResult> Create(string shopGuid, string groupGuid)
         {
             // 取出該訂單所對應的店家商品
             ViewBag.bentos = await _context.Bentos.Where(d => d.ShopGuid == shopGuid).ToListAsync();
+
+            // 暫存此訂單對應的店家與群組
+            ViewBag.shopGuid = shopGuid;
+            ViewBag.groupGuid = groupGuid;
+
             return View();
         }
 
@@ -58,6 +63,18 @@ namespace NekoFood.Controllers
                 string shopGuid = PostData["shopGuid"].ToString().Trim();
                 int number =  Utility.ConvertStrToInt(PostData["number"].ToString());
                 string remark = PostData["remark"].ToString().Trim();
+
+                if(groupGuid.Length != 32)
+                {
+                    TempData["message"] = "訂餐失敗，無法解析對應的群組";
+                    return RedirectToAction("Index");
+                }
+
+                if (shopGuid.Length != 32)
+                {
+                    TempData["message"] = "訂餐失敗，無法解析對應的店家";
+                    return RedirectToAction("Index");
+                }
 
                 // 解析便當資訊(包含名稱與價格，兩者以逗號隔開)
                 string[] bentoData = PostData["bentoName"].ToString().Trim().Split(',');
@@ -150,6 +167,9 @@ namespace NekoFood.Controllers
 
             #endregion
 
+            // 取出該訂單所對應的店家商品
+            ViewBag.bentos = await _context.Bentos.Where(d => d.ShopGuid == data.ShopGuid).ToListAsync();
+
             return View(data);
         }
 
@@ -161,10 +181,19 @@ namespace NekoFood.Controllers
             {
                 // 提取前端傳來的參數
                 int id = Convert.ToInt32(PostData["id"].ToString());
-                string bentoName = PostData["bentoName"].ToString().Trim();
                 int number = Utility.ConvertStrToInt(PostData["number"].ToString());
-                int price = Utility.ConvertStrToInt(PostData["price"].ToString());
                 string remark = PostData["remark"].ToString().Trim();
+
+                // 解析便當資訊(包含名稱與價格，兩者以逗號隔開)
+                string[] bentoData = PostData["bentoName"].ToString().Trim().Split(',');
+                if (bentoData.Length != 2)
+                {
+                    TempData["message"] = "修改失敗，無法解析餐點名稱與價格";
+                    return RedirectToAction("Index");
+                }
+
+                string bentoName = bentoData[0];
+                int price = Utility.ConvertStrToInt(bentoData[1]);
 
                 // 撈取目標資料
                 var data = await _context.BentoOrders.FindAsync(id);

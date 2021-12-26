@@ -55,6 +55,8 @@
                                         <label>備註</label>
                                         <input class="form-control" name="remark" maxlength="30">
                                     </div>
+                                    <input type="hidden" name="shopGuid" value="@ViewBag.shopGuid" />
+                                    <input type="hidden" name="groupGuid" value=@ViewBag.groupGuid />
                                     <button type="submit" class="btn btn-primary">送出</button>
                                     <button type="reset" class="btn btn-success">重設</button>
                                     <a class="btn btn-danger" href="@Url.Action("Index", "BentoOrder")">返回訂單列表</a>

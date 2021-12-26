@@ -84,7 +84,7 @@
                                                         }
                                                         else
                                                         {
-                                                            <button class="btn btn-success" onclick="location.href='@Url.Action("Create", "BentoOrder", new { shopGuid = data.ShopGuid })'">加入訂餐</button>
+                                                            <button class="btn btn-success" onclick="location.href='@Url.Action("Create", "BentoOrder", new { shopGuid = data.ShopGuid, groupGuid = data.GroupGuid })'">加入訂餐</button>
                                                         }
                                                     </td>
                                                 </tr>

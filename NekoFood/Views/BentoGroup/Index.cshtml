@@ -79,6 +79,7 @@
                                                     <td style="white-space: nowrap;">
                                                         @if (ViewBag.PageTitle == "我的群組")
                                                         {
+                                                            <button class="btn btn-warning" onclick="location.href='@Url.Action("Check", "BentoGroup", new { groupGuid = data.GroupGuid })'">訂購情況</button>
                                                             <button class="btn btn-success" onclick="location.href='@Url.Action("Edit", "BentoGroup", new { id = data.Id })'">修改</button>
                                                             <button class="btn btn-danger" onclick="DeleteData(@data.Id)">刪除</button>
                                                         }

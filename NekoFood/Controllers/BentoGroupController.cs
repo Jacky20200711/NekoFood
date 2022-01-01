@@ -265,5 +265,19 @@ namespace NekoFood.Controllers
                 return View("~/Views/Shared/ErrorPage.cshtml");
             }
         }
+
+        public async Task<IActionResult> Check(string groupGuid)
+        {
+            try
+            {
+                var data = await _context.BentoOrders.Where(d => d.GroupGuid == groupGuid).ToListAsync();
+                return View(data);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"取得群組底下的訂單失敗 GUID = {groupGuid} and error is {ex}");
+                return View("~/Views/Shared/ErrorPage.cshtml");
+            }
+        }
     }
 }

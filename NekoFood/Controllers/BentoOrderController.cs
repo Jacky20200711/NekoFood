@@ -219,5 +219,39 @@ namespace NekoFood.Controllers
                 return View("~/Views/Shared/ErrorPage.cshtml");
             }
         }
+
+        [HttpPost]
+        public async Task<string> ChangePayStatus(IFormCollection PostData)
+        {
+            try
+            {
+                // 提取前端傳來的參數
+                int id = Convert.ToInt32(PostData["id"].ToString());
+                string creator = PostData["creator"].ToString();
+
+                // 撈取目標資料
+                var data = await _context.BentoOrders.FindAsync(id);
+                if (data == null)
+                {
+                    return "修改失敗，此筆資料不存在";
+                }
+
+                if (Utility.GetLoginName(HttpContext) != creator)
+                {
+                    return "修改失敗，權限不足";
+                }
+
+                // 修改付款狀態
+                data.IsChecked = data.IsChecked == 1 ? 0 : 1;
+                await _context.SaveChangesAsync();
+
+                return "修改成功";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"修改 BentoOrder 失敗 -> {ex}");
+                return "修改失敗，資料庫忙碌中";
+            }
+        }
     }
 }

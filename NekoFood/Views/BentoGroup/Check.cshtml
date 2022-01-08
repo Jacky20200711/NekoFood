@@ -12,6 +12,23 @@
     {
         alert(serverMessage);
     }
+
+    // 修改付款狀態
+    function ChangePayStatus(dataId, groupCreator){
+        var result = confirm("確定要修改付款狀態?");
+        if(result){
+            $.ajax({
+                type: "post",
+                url: '@Url.Action("ChangePayStatus", "BentoOrder")',
+                data: { id: dataId, creator: groupCreator}
+            }).done(function (message) {
+                alert(message);
+                if(message == "修改成功"){
+                    self.location.reload();
+                }
+            });
+        }
+    }
 </script>
 
 <div id = "page-wrapper" >
@@ -62,7 +79,7 @@
                                                     <td style="white-space: nowrap;">@data.TotalCost</td>
                                                     <td style="white-space: nowrap;">@data.CreateTime</td>
                                                     <td style="white-space: nowrap;">@data.Remark</td>
-                                                    <td style="white-space: nowrap;">@payStatus</td>
+                                                    <td style="white-space: nowrap; color:red; cursor:pointer;" onclick="ChangePayStatus(@data.Id, '@ViewBag.creator')">@payStatus</td>
                                                 </tr>
                                             }
                                         }

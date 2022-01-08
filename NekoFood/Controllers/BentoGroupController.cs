@@ -266,10 +266,11 @@ namespace NekoFood.Controllers
             }
         }
 
-        public async Task<IActionResult> Check(string groupGuid)
+        public async Task<IActionResult> Check(string groupGuid, string creator)
         {
             try
             {
+                ViewBag.creator = creator;
                 var data = await _context.BentoOrders.Where(d => d.GroupGuid == groupGuid).ToListAsync();
                 return View(data);
             }

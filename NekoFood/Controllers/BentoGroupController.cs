@@ -146,10 +146,10 @@ namespace NekoFood.Controllers
 
                 #endregion
 
-                // 檢查是否擁有異動權限
-                if (!PermissionService.HasPermissionToModifyBentoGroup(HttpContext, data.Creator))
+                // 檢查權限(只有群組建立者可以刪除自己的群組)
+                if (data.Creator != Utility.GetLoginName(HttpContext))
                 {
-                    return "刪除失敗，權限不足";
+                    return "權限不足";
                 }
 
                 // 更新DB
@@ -237,10 +237,10 @@ namespace NekoFood.Controllers
                     return RedirectToAction("Index");
                 }
 
-                // 檢查是否擁有異動權限
-                if (!PermissionService.HasPermissionToModifyBentoGroup(HttpContext, data.Creator))
+                // 檢查權限(只有群組建立者可以修改自己的群組)
+                if (data.Creator != Utility.GetLoginName(HttpContext))
                 {
-                    TempData["message"] = "修改失敗，權限不足";
+                    TempData["message"] = "權限不足";
                     return RedirectToAction("Index");
                 }
 
@@ -270,6 +270,13 @@ namespace NekoFood.Controllers
         {
             try
             {
+                // 檢查權限(只有群組建立者可以查看群組底下的訂單)
+                if (creator != Utility.GetLoginName(HttpContext))
+                {
+                    TempData["message"] = "權限不足";
+                    return RedirectToAction("Index");
+                }
+
                 ViewBag.creator = creator;
                 var data = await _context.BentoOrders.Where(d => d.GroupGuid == groupGuid).ToListAsync();
                 return View(data);

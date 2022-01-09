@@ -181,5 +181,30 @@ namespace NekoFood.Controllers
                 return View("~/Views/Shared/ErrorPage.cshtml");
             }
         }
+
+        [HttpPost]
+        public async Task<string> ChangePassword(string loginName, string newPassword)
+        {
+            try
+            {
+                // 取出目標資料
+                var data = await _context.UserAccounts.FirstOrDefaultAsync(u => u.Name == loginName);
+                if (data == null)
+                {
+                    return "修改失敗，此筆資料不存在";
+                }
+
+                // 修改目標資料 & 更新DB
+                data.PasswordHash = Utility.GetEncryptPassword(newPassword);
+                await _context.SaveChangesAsync();
+
+                return "修改成功";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"修改 UserAccount 失敗 -> {ex}");
+                return "修改失敗，資料庫忙碌中";
+            }
+        }
     }
 }

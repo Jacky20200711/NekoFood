@@ -87,6 +87,7 @@
                         <li>
                             <a href="@Url.Action("Index", "BentoOrder")"><i class="fa fa-edit fa-fw"></i> 我的訂單</a>
                             <a href="@Url.Action("Index", "BentoGroup", new { isGetAll = false })"><i class="fa fa-edit fa-fw"></i> 我的群組</a>
+                            <a href="#" onclick="ChangePassword()"><i class="fa fa-edit fa-fw"></i> 修改密碼</a>
                             @if(@isAdmin){
                                 <a href="@Url.Action("Index", "BentoShop")"><i class="fa fa-edit fa-fw"></i> 店家列表</a>
                                 <a href="@Url.Action("Index", "UserAccount")"><i class="fa fa-edit fa-fw"></i> 用戶列表</a>
@@ -121,6 +122,42 @@
                 responsive: true
             });
         });
+        function ChangePassword(){
+            var result = prompt("輸入新密碼");
+            if (result) {
+                if (result.trim().length < 1) {
+                    alert("修改失敗，密碼不能為空");
+                    return false;
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("ChangePassword", "UserAccount")',
+                    data: { loginName: '@loginName', newPassword: result },
+                    error: function(jqXHR, exception) {
+                        // 判斷請求錯誤的原因
+                        var msg = '';
+                        if (jqXHR.status === 0) {
+                            msg = 'No connect, may encounter cross domain problem';
+                        } else if (jqXHR.status == 404) {
+                            msg = 'Requested page not found. [404]';
+                        } else if (jqXHR.status == 500) {
+                            msg = 'Internal Server Error [500].';
+                        } else if (exception === 'parsererror') {
+                            msg = 'Requested JSON parse failed.';
+                        } else if (exception === 'timeout') {
+                            msg = 'Time out error.';
+                        } else if (exception === 'abort') {
+                            msg = 'Ajax request aborted.';
+                        } else {
+                            msg = 'Uncaught Error.' + jqXHR.responseText;
+                        }
+                        alert(msg);
+                    }
+                }).done(function (message) {
+                    alert(message);
+                });
+            }
+        }
     </script>
 </body>
 </html>

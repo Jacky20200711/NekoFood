@@ -22,7 +22,9 @@ dotnet add package NLog.Web.AspNetCore --version 4.14.0-readme-preview
 # 系統規劃  
 1.網站管理員才能異動店家、商品、用戶  
 2.群組建立者才能查看群組的[訂購情況]、修改訂單[已付款]的欄位  
-3.用戶可以建立群組、加入別人的群組、修改自己的密碼、異動自己的訂單  
+3.一個群組只能對應一個店家  
+4.一個訂單只能對應一個群組  
+5.用戶可以建立群組、加入別人的群組、修改自己的密碼、異動自己的訂單  
 &emsp;  
 # DB Schema  
 -- 會員(Name不能重複)  
@@ -82,20 +84,20 @@ CREATE TABLE BentoOrder
 );  
 &emsp;  
 # 訂便當的流程01 - 用戶登入  
-![image](https://github.com/Jacky20200711/NekoFood/blob/master/DEMO_01.PNG?raw=true)  
+![image](https://github.com/Jacky20200711/NekoFood/blob/main/DEMO_01.PNG?raw=true)  
 &emsp;  
 # 訂便當的流程02 - 選擇要加入的群組  
-![image](https://github.com/Jacky20200711/NekoFood/blob/master/DEMO_02.PNG?raw=true)  
+![image](https://github.com/Jacky20200711/NekoFood/blob/main/DEMO_02.PNG?raw=true)  
 &emsp;  
 # 訂便當的流程03 - 填寫訂單  
-![image](https://github.com/Jacky20200711/NekoFood/blob/master/DEMO_03.PNG?raw=true)  
+![image](https://github.com/Jacky20200711/NekoFood/blob/main/DEMO_03.PNG?raw=true)  
 &emsp;  
 # 訂便當的流程04 - 查看訂單  
-![image](https://github.com/Jacky20200711/NekoFood/blob/master/DEMO_04.PNG?raw=true)  
+![image](https://github.com/Jacky20200711/NekoFood/blob/main/DEMO_04.PNG?raw=true)  
 &emsp;  
 # 群組建立者可以查看訂購情況  
-![image](https://github.com/Jacky20200711/NekoFood/blob/master/DEMO_05.PNG?raw=true)  
+![image](https://github.com/Jacky20200711/NekoFood/blob/main/DEMO_05.PNG?raw=true)  
 &emsp;  
 # 群組建立者可以查看或修改[已付款]欄位  
-![image](https://github.com/Jacky20200711/NekoFood/blob/master/DEMO_06.PNG?raw=true)  
+![image](https://github.com/Jacky20200711/NekoFood/blob/main/DEMO_06.PNG?raw=true)  
 &emsp;  

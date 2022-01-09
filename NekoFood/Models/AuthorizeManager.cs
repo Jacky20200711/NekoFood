@@ -16,10 +16,10 @@ namespace NekoFood.Models
                 context.Result = new RedirectToRouteResult(new { controller = "Login", action = "Index" });
             }
 
-            // 控制只有管理員才能存取的 Controller 權限
+            // 處理只有管理員才能存取的情況
             if (context.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor)
             {
-                // 取得 request的 controller 與 action 名稱，並檢查存取權限
+                // 取得 User 請求的 controller 與 action 名稱
                 string controllerName = controllerActionDescriptor.ControllerName;
                 string actionName = controllerActionDescriptor.ActionName;
                 bool isAdmin = context.HttpContext.Session.GetString("admin") != null;
@@ -46,7 +46,7 @@ namespace NekoFood.Models
                 context.Result = new RedirectToRouteResult(new RouteValueDictionary {
                     { "action", "Logout" },
                     { "controller", "Login" },
-                    { "isClearCache", false }, // 小心不要清除到 Cache (會造成新裝置的登入也失效)
+                    { "isClearCache", false }, // 小心不要清除到 Cache (避免造成新裝置的登入失效)
                 });
             }
         }

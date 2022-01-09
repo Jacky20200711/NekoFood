@@ -11,6 +11,7 @@ using NekoFood.Services;
 
 namespace NekoFood.Controllers
 {
+    [AuthorizeManager]
     public class BentoOrderController : Controller
     {
         private readonly ILogger<BentoOrderController> _logger;
@@ -30,7 +31,10 @@ namespace NekoFood.Controllers
         {
             try
             {
-                var data = await _context.BentoOrders.OrderByDescending(d => d.CreateTime).ToListAsync();
+                var data = await _context.BentoOrders
+                    .Where(o => o.Payer == Utility.GetLoginName(HttpContext))
+                    .OrderByDescending(d => d.CreateTime).ToListAsync();
+
                 return View(data);
             }
             catch (Exception ex)
@@ -136,10 +140,18 @@ namespace NekoFood.Controllers
 
                 #endregion
 
+                // 檢查權限(只有訂單建立者可以刪除自己的訂單)
+                string payer = data.Payer;
+                if (data.Payer != Utility.GetLoginName(HttpContext))
+                {
+                    return "權限不足";
+                }
+
                 // 更新DB
                 _context.Remove(data);
                 await _context.SaveChangesAsync();
 
+                _logger.LogError($"{Utility.GetLoginName(HttpContext)} 刪除了 {payer} 的訂單");
                 return "刪除成功";
             }
             catch (Exception ex)
@@ -203,6 +215,13 @@ namespace NekoFood.Controllers
                     return RedirectToAction("Index");
                 }
 
+                // 檢查權限(只有訂單建立者可以修改自己的訂單)
+                if (data.Payer != Utility.GetLoginName(HttpContext))
+                {
+                    TempData["message"] = "權限不足";
+                    return RedirectToAction("Index");
+                }
+
                 // 修改目標資料並更新DB(只允許修改便當名稱、數量、備註)
                 data.BentoName = bentoName;
                 data.Number = number;
@@ -236,6 +255,7 @@ namespace NekoFood.Controllers
                     return "修改失敗，此筆資料不存在";
                 }
 
+                // 檢查權限(只有群組建立者可以異動訂單的[已付款]欄位)
                 if (Utility.GetLoginName(HttpContext) != creator)
                 {
                     return "修改失敗，權限不足";

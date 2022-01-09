@@ -278,7 +278,11 @@ namespace NekoFood.Controllers
                 }
 
                 ViewBag.creator = creator;
-                var data = await _context.BentoOrders.Where(d => d.GroupGuid == groupGuid).ToListAsync();
+                var data = await _context.BentoOrders
+                    .Where(d => d.GroupGuid == groupGuid)
+                    .OrderByDescending(d => d.CreateTime)
+                    .ToListAsync();
+
                 return View(data);
             }
             catch (Exception ex)

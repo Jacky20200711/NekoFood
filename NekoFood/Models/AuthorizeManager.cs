@@ -26,10 +26,20 @@ namespace NekoFood.Models
             {
                 // 取得 request的 controller 名稱
                 string controllerName = controllerActionDescriptor.ControllerName;
+                string actionName = controllerActionDescriptor.ActionName;
                 bool isAdmin = context.HttpContext.Session.GetString("admin") != null;
-                if (!isAdmin && (controllerName == "UserAccount" || controllerName == "BentoShop"))
+                if (!isAdmin )
                 {
-                    context.Result = new NotFoundResult();
+                    if (controllerName == "BentoShop")
+                    {
+                        context.Result = new NotFoundResult();
+                    }
+
+                    // 開放 UserAccount 底下的 ChangePassword 供一般用戶存取
+                    if (controllerName == "UserAccount" && actionName != "ChangePassword")
+                    {
+                        context.Result = new NotFoundResult();
+                    }
                 }
             }
 

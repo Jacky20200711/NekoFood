@@ -126,61 +126,36 @@ namespace NekoFood.Controllers
             }
         }
 
-        public async Task<IActionResult> Edit(int? id)
-        {
-            #region 檢查資料庫是否有這筆資料
-
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var data = await _context.UserAccounts.FindAsync(id);
-
-            if (data == null)
-            {
-                return NotFound();
-            }
-
-            #endregion
-
-            return View(data);
-        }
-
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(IFormCollection PostData)
+        public async Task<string> Edit(string userName, string newPassword)
         {
             try
             {
-                // 取出參數內容
-                string password = PostData["password"].ToString().Trim();
-                int id = Convert.ToInt32(PostData["id"].ToString());
-                if (string.IsNullOrEmpty(password))
+                newPassword = newPassword.Trim();
+
+                if (string.IsNullOrEmpty(newPassword))
                 {
-                    TempData["message"] = "修改失敗，帳號或密碼不能為空";
-                    return RedirectToAction("Edit", new { id });
+                    return "密碼不可為空";
                 }
+
 
                 // 取出目標資料
-                var data = await _context.UserAccounts.FindAsync(id);
+                var data = _context.UserAccounts.FirstOrDefault(p => p.Name == userName);
                 if (data == null)
                 {
-                    TempData["message"] = "修改失敗，此筆資料不存在";
-                    return RedirectToAction("Index");
+                    return "無此帳號";
                 }
 
-                // 修改目標資料 & 更新DB
-                data.PasswordHash = Utility.GetEncryptPassword(password);
+                // 更新DB
+                data.PasswordHash = Utility.GetEncryptPassword(newPassword);
                 await _context.SaveChangesAsync();
 
-                TempData["message"] = "修改成功";
-                return RedirectToAction("Index");
+                return "修改成功";
             }
             catch (Exception ex)
             {
                 _logger.LogError($"修改 UserAccount 失敗 -> {ex}");
-                return View("~/Views/Shared/ErrorPage.cshtml");
+                return "修改失敗，資料庫忙碌中";
             }
         }
 

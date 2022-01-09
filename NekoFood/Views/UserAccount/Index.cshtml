@@ -37,6 +37,23 @@
             });
         }
     }
+    function EditPassword(userName) {
+        var result = prompt("輸入新密碼");
+        if (result) {
+            result = result.trim();
+            if (result.length < 1) {
+                alert("密碼不可為空");
+                return false;
+            }
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("Edit", "UserAccount")',
+                data: { userName: userName, newPassword: result}
+            }).done(function (message) {
+                alert(message);
+            });
+        }
+    }
 </script>
 
 <script>
@@ -93,7 +110,7 @@
                                                     <td style="white-space: nowrap;">@data.Name</td>
                                                     <td style="white-space: nowrap;">@data.PasswordHash</td>
                                                     <td style="white-space: nowrap;">
-                                                        <button class="btn btn-success" onclick="location.href='@Url.Action("Edit", "UserAccount", new { id = data.Id })'">修改</button>
+                                                        <button class="btn btn-success" onclick="EditPassword('@data.Name')">修改</button>
                                                         <button class="btn btn-danger" onclick="DeleteData(@data.Id)">刪除</button>
                                                     </td>
                                                 </tr>

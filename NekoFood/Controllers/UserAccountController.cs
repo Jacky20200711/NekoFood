@@ -41,46 +41,48 @@ namespace NekoFood.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(IFormCollection PostData)
+        public async Task<string> Create(string userData)
         {
             try
             {
-                // 取出參數內容
-                string username = PostData["username"].ToString().Trim();
-                string password = PostData["password"].ToString().Trim();
-                if(string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+                string[] dataSplit = userData.Split(',');
+
+                if (dataSplit.Length != 2)
                 {
-                    TempData["message"] = "新增失敗，帳號或密碼不能為空";
-                    return RedirectToAction("Create");
+                    return "用戶名稱與密碼不可為空，且不能包含逗點";
+                }
+
+                dataSplit[0] = dataSplit[0].Trim();
+                dataSplit[1] = dataSplit[1].Trim();
+                if (dataSplit[0].Length == 0 || dataSplit[1].Length == 0)
+                {
+                    return "用戶名稱與密碼不可為空";
                 }
 
                 // 禁止帳號重複
-                var data = _context.UserAccounts.FirstOrDefault(p => p.Name == username);
+                var data = _context.UserAccounts.FirstOrDefault(p => p.Name == dataSplit[0]);
                 if(data != null)
                 {
-                    TempData["message"] = "新增失敗，帳號不能重複";
-                    return RedirectToAction("Create");
+                    return "新增失敗，此帳號已被使用";
                 }
 
                 // 新增資料
                 UserAccount newData = new()
                 {
-                    Name = username,
-                    PasswordHash = Utility.GetEncryptPassword(password),
+                    Name = dataSplit[0],
+                    PasswordHash = Utility.GetEncryptPassword(dataSplit[1]),
                 };
                 
                 // 更新DB
                 _context.Add(newData);
                 await _context.SaveChangesAsync();
                 
-                TempData["message"] = "新增成功";
-                return RedirectToAction("Index");
+                return "新增成功";
             }
             catch (Exception ex)
             {
                 _logger.LogError($"新增 UserAccount 失敗 -> {ex}");
-                return View("~/Views/Shared/ErrorPage.cshtml");
+                return "新增失敗，資料庫忙碌中";
             }
         }
 

@@ -41,26 +41,20 @@ namespace NekoFood.Controllers
         }
 
         [HttpPost]
-        public async Task<string> Create(string userData)
+        public async Task<string> Create(string userName, string password)
         {
             try
             {
-                string[] dataSplit = userData.Split(',');
+                userName = userName.Trim();
+                password = password.Trim();
 
-                if (dataSplit.Length != 2)
-                {
-                    return "用戶名稱與密碼不可為空，且不能包含逗點";
-                }
-
-                dataSplit[0] = dataSplit[0].Trim();
-                dataSplit[1] = dataSplit[1].Trim();
-                if (dataSplit[0].Length == 0 || dataSplit[1].Length == 0)
+                if (userName.Length < 1 || password.Length < 1)
                 {
                     return "用戶名稱與密碼不可為空";
                 }
 
                 // 禁止帳號重複
-                var data = _context.UserAccounts.FirstOrDefault(p => p.Name == dataSplit[0]);
+                var data = _context.UserAccounts.FirstOrDefault(p => p.Name == userName);
                 if(data != null)
                 {
                     return "新增失敗，此帳號已被使用";
@@ -69,8 +63,8 @@ namespace NekoFood.Controllers
                 // 新增資料
                 UserAccount newData = new()
                 {
-                    Name = dataSplit[0],
-                    PasswordHash = Utility.GetEncryptPassword(dataSplit[1]),
+                    Name = userName,
+                    PasswordHash = Utility.GetEncryptPassword(password),
                 };
                 
                 // 更新DB

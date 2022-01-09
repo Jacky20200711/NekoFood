@@ -20,15 +20,24 @@
     function CreateData() {
         var result = prompt("輸入用戶名稱與密碼(以逗點區隔)");
         if (result) {
-            var dataCheck = result.trim().split(',');
-            if (dataCheck.length != 2) {
-                alert("用戶名稱與密碼不可為空，且不能包含逗點");
+            var dataSplit = result.trim().split(',');
+            if (dataSplit.length < 2) {
+                alert("輸入錯誤");
+                return false;
+            }
+            // 取出名稱
+            var userName = dataSplit[0].trim();
+            // 取出密碼
+            var index = result.indexOf(',');
+            var password = result.slice(index + 1).trim();
+            if(password.length < 1){
+                alert("密碼不可為空");
                 return false;
             }
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("Create", "UserAccount")',
-                data: { userData: result }
+                data: { userName: userName, password: password }
             }).done(function (message) {
                 alert(message);
                 if (message == "新增成功") {
